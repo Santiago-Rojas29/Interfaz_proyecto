@@ -1,0 +1,5 @@
+usuarios = [{'nombre': 'Santiago', 'correo': 'admin@sistema.com', 'contraseña': '1234'}]
+elementos = []
+ventas = []
+facturas = []
+compras = []
