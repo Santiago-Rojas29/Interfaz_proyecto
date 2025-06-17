@@ -1,0 +1,12 @@
+[
+    {
+        "nombre": "admin",
+        "correo": "admin@sistema.com",
+        "contraseña": "1234"
+    },
+    {
+        "nombre": "Felipe A",
+        "correo": "felipe@gmail.com",
+        "contraseña": "12345"
+    }
+]

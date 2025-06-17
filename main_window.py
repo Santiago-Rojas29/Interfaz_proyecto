@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
 from PyQt5.QtCore import Qt
-from data import ventas, facturas
+from data import cargar_ventas, cargar_facturas  # ✅ CORRECTO
 from mod_usuarios import ModuloUsuarios
 from mod_elementos import ModuloElementos
 from mod_ventas import ModuloVentas

@@ -3,7 +3,11 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QMessageBox
 )
 
-elementos = []
+from data import cargar_datos, guardar_datos
+
+# Cargar datos
+elementos = cargar_datos("elementos.json")
+
 
 class ModuloElementos(QWidget):
     def __init__(self, parent):
@@ -71,18 +75,29 @@ class ModuloElementos(QWidget):
     def guardar_elemento(self):
         try:
             nombre = self.nombre.text().strip()
-            precio = float(self.precio.text().strip())
-            if not nombre:
-                QMessageBox.warning(self, "Error", "El nombre no puede estar vacío.")
+            precio_texto = self.precio.text().strip()
+
+            if not nombre or not precio_texto:
+                QMessageBox.warning(self, "Error", "Todos los campos son obligatorios.")
                 return
-            if any(e['nombre'] == nombre for e in elementos):
+
+            precio = float(precio_texto)
+            if precio < 0:
+                QMessageBox.warning(self, "Error", "El precio debe ser mayor o igual a cero.")
+                return
+
+            if any(e['nombre'].lower() == nombre.lower() for e in elementos):
                 QMessageBox.warning(self, "Error", "El elemento ya existe.")
                 return
+
             elementos.append({'nombre': nombre, 'precio': precio, 'stock': 0})
-            QMessageBox.information(self, "Guardado", "Elemento guardado.")
+            guardar_datos("elementos.json", elementos)  # ✅ Guardar en archivo
+
+            QMessageBox.information(self, "Guardado", "Elemento guardado correctamente.")
             self.nombre.clear()
             self.precio.clear()
             self.actualizar_lista()
+
         except ValueError:
             QMessageBox.warning(self, "Error", "El precio debe ser un número válido.")
 
@@ -95,6 +110,7 @@ class ModuloElementos(QWidget):
             )
             if confirm == QMessageBox.Yes:
                 elementos.pop(row)
+                guardar_datos("elementos.json", elementos)  # ✅ Guardar en archivo
                 self.actualizar_lista()
 
     def actualizar_lista(self):

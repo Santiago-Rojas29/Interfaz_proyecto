@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 from PyQt5.QtCore import Qt
-from data import usuarios
+from data import cargar_usuarios
 from main_window import MainWindow
 
 class LoginWindow(QWidget):
@@ -42,6 +42,8 @@ class LoginWindow(QWidget):
     def validar_login(self):
         nombre = self.usuario.text().strip()
         contraseña = self.contrasena.text().strip()
+
+        usuarios = cargar_usuarios()
 
         for u in usuarios:
             if u['nombre'] == nombre and u['contraseña'] == contraseña:

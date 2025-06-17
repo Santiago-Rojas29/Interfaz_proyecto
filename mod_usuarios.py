@@ -3,7 +3,16 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QMessageBox
 )
 
-usuarios = []
+from data import (
+    cargar_usuarios, guardar_usuarios,
+    cargar_datos, guardar_datos
+)
+
+usuarios = cargar_usuarios()
+ventas = cargar_datos("ventas.json")
+facturas = cargar_datos("facturas.json")
+elementos = cargar_datos("elementos.json")
+compras = cargar_datos("compras.json")
 
 class ModuloUsuarios(QWidget):
     def __init__(self, parent):
@@ -35,7 +44,7 @@ class ModuloUsuarios(QWidget):
         self.contrasena.setEchoMode(QLineEdit.Password)
 
         self.lista = QListWidget()
-        self.lista.itemClicked.connect(self.cargar_usuario)
+        self.lista.itemClicked.connect(lambda _: self.cargar_usuario())  # ✅ Corregido
 
         self.btn_guardar = QPushButton("Guardar Usuario")
         self.btn_guardar.clicked.connect(self.guardar_usuario)
@@ -83,6 +92,8 @@ class ModuloUsuarios(QWidget):
         self.actualizar_lista()
 
     def actualizar_lista(self):
+        global usuarios
+        usuarios = cargar_usuarios()  # ✅ Recargar desde archivo
         self.lista.clear()
         for u in usuarios:
             self.lista.addItem(f"{u['nombre']} - {u['correo']}")
@@ -112,6 +123,8 @@ class ModuloUsuarios(QWidget):
             usuarios[self.usuario_editando] = {'nombre': nombre, 'correo': correo, 'contraseña': contrasena}
             QMessageBox.information(self, "Actualizado", "Usuario actualizado correctamente")
 
+        guardar_usuarios(usuarios)  # ✅ Guardar cambios en el archivo
+
         self.usuario_editando = None
         self.nombre.clear()
         self.correo.clear()
@@ -133,6 +146,7 @@ class ModuloUsuarios(QWidget):
             )
             if confirm == QMessageBox.Yes:
                 usuarios.pop(row)
+                guardar_usuarios(usuarios)  # ✅ Guardar después de eliminar
                 self.usuario_editando = None
                 self.nombre.clear()
                 self.correo.clear()

@@ -1,0 +1,14 @@
+[
+    {
+        "proveedor": "Distribuidora XYZ",
+        "elemento": "Teclado",
+        "cantidad": 10,
+        "precio": 40.0
+    },
+    {
+        "proveedor": "Ruth",
+        "elemento": "Chocolates",
+        "precio": 10000.0,
+        "cantidad": 20
+    }
+]
