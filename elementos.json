@@ -1,0 +1,17 @@
+[
+    {
+        "nombre": "Monitor",
+        "precio": 800.0,
+        "stock": 10
+    },
+    {
+        "nombre": "Teclado",
+        "precio": 50.0,
+        "stock": 25
+    },
+    {
+        "nombre": "Chocolates",
+        "precio": 10000.0,
+        "stock": 20
+    }
+]

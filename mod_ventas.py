@@ -1,11 +1,12 @@
-
-
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QComboBox, QSpinBox, QPushButton,
-    QMessageBox, QListWidget, QLineEdit
+    QMessageBox
 )
-from data import elementos, ventas, compras
+from data import cargar_datos, guardar_datos
 
+# Cargar las listas directamente desde el archivo JSON
+ventas = cargar_datos("ventas.json")
+elementos = cargar_datos("elementos.json")
 
 class ModuloVentas(QWidget):
     def __init__(self, parent):
@@ -24,18 +25,18 @@ class ModuloVentas(QWidget):
         self.btn_vender.clicked.connect(self.registrar_venta)
         self.btn_volver.clicked.connect(self.volver)
 
-        label = QLabel("Producto")
-        label.setStyleSheet("""
-        font-size: 20px;
-        font-family: 'Times New Roman';
-        color: black;
-        font-weight: bold;
+        label_producto = QLabel("Producto")
+        label_producto.setStyleSheet("""
+            font-size: 20px;
+            font-family: 'Times New Roman';
+            color: black;
+            font-weight: bold;
         """)
-        layout.addWidget(label)
+        layout.addWidget(label_producto)
         layout.addWidget(self.producto)
 
         label_cantidad = QLabel("Cantidad")
-        label_cantidad.setStyleSheet(label.styleSheet())
+        label_cantidad.setStyleSheet(label_producto.styleSheet())
         layout.addWidget(label_cantidad)
         layout.addWidget(self.cantidad)
 
@@ -43,18 +44,18 @@ class ModuloVentas(QWidget):
         layout.addWidget(self.btn_volver)
 
         estilo_btn = """
-        QPushButton {
-        background-color: #3498DB;  
-        color: white;
-        font-size: 16px;
-        padding: 5px;
-        border-radius: 5px;
-        font-weight: bold;
-        font-family:'Times New Roman'
-        }
-        QPushButton:hover {
-        background-color: #2980B9;
-        }
+            QPushButton {
+                background-color: #3498DB;
+                color: white;
+                font-size: 16px;
+                padding: 5px;
+                border-radius: 5px;
+                font-weight: bold;
+                font-family: 'Times New Roman';
+            }
+            QPushButton:hover {
+                background-color: #2980B9;
+            }
         """
         self.btn_vender.setStyleSheet(estilo_btn)
         self.btn_volver.setStyleSheet(estilo_btn)
@@ -69,15 +70,30 @@ class ModuloVentas(QWidget):
 
     def registrar_venta(self):
         idx = self.producto.currentIndex()
+        if idx < 0 or idx >= len(elementos):
+            QMessageBox.warning(self, "Error", "Selecciona un producto válido.")
+            return
+
         cantidad = self.cantidad.value()
         el = elementos[idx]
+
         if el['stock'] < cantidad:
-            QMessageBox.warning(self, "Error", "No hay suficiente stock.")
+            QMessageBox.warning(self, "Error", "No hay suficiente stock disponible.")
             return
+
         el['stock'] -= cantidad
         total = cantidad * el['precio']
-        ventas.append({'elemento': el['nombre'], 'cantidad': cantidad, 'total': total})
-        QMessageBox.information(self, "Venta registrada", f"Total: ${total:.2f}")
+        ventas.append({
+            'elemento': el['nombre'],
+            'cantidad': cantidad,
+            'total': total
+        })
+
+        # Guardar los cambios
+        guardar_datos("ventas.json", ventas)
+        guardar_datos("elementos.json", elementos)
+
+        QMessageBox.information(self, "Venta registrada", f"Venta realizada con éxito\nTotal: ${total:.2f}")
         self.actualizar_productos()
 
     def volver(self):
