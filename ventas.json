@@ -5,5 +5,20 @@
         "cantidad": 1,
         "total": 800.0,
         "fecha": "2025-06-17"
+    },
+    {
+        "elemento": "Chocolates",
+        "cantidad": 4,
+        "total": 40000.0
+    },
+    {
+        "elemento": "Chocolates",
+        "cantidad": 4,
+        "total": 40000.0
+    },
+    {
+        "elemento": "Chocolates",
+        "cantidad": 4,
+        "total": 40000.0
     }
 ]
