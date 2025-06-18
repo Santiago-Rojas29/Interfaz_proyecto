@@ -8,8 +8,9 @@ from mod_compras import ModuloCompras
 from mod_facturas import ModuloFacturas
 
 class MainWindow(QWidget):
-    def __init__(self, usuario_nombre):
+    def __init__(self, usuario_nombre, login_window):
         super().__init__()
+        self.login_window = login_window
         self.setWindowTitle("Panel Principal - Stocky")
         self.setGeometry(800, 350, 420, 450)
 
@@ -30,12 +31,14 @@ class MainWindow(QWidget):
         self.label_bienvenida = QLabel(f"Bienvenido, {usuario_nombre}")
         self.label_bienvenida.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.label_bienvenida)
+        
 
         self.btn_usuarios = QPushButton("Módulo de Usuarios")
         self.btn_elementos = QPushButton("Módulo de Elementos")
         self.btn_ventas = QPushButton("Módulo de Ventas")
         self.btn_factura = QPushButton("Módulo de Facturación")
         self.btn_compras = QPushButton("Módulo de Compras")
+        self.btn_cerrar = QPushButton("Cerrar Sesión")
 
         botones = [
             self.btn_usuarios, self.btn_elementos,
@@ -45,6 +48,9 @@ class MainWindow(QWidget):
             btn.setStyleSheet("background-color: #3498DB; color: white; padding: 10px; border-radius: 8px;")
             layout.addWidget(btn)
 
+        self.btn_cerrar.setStyleSheet("background-color: #e74c3c; color: white; padding: 10px; border-radius: 8px;")
+        layout.addWidget(self.btn_cerrar)
+
         self.setLayout(layout)
 
         self.btn_usuarios.clicked.connect(self.abrir_modulo_usuarios)
@@ -52,6 +58,7 @@ class MainWindow(QWidget):
         self.btn_ventas.clicked.connect(self.abrir_modulo_ventas)
         self.btn_factura.clicked.connect(self.abrir_modulo_factura)
         self.btn_compras.clicked.connect(self.abrir_modulo_compras)
+        self.btn_cerrar.clicked.connect(self.cerrar_sesion)
 
     def abrir_modulo_usuarios(self):
         self.hide()
@@ -77,3 +84,11 @@ class MainWindow(QWidget):
         self.hide()
         self.compra_window = ModuloCompras(self)
         self.compra_window.show()
+    def cerrar_sesion(self):
+        confirm = QMessageBox.question(
+            self, "Cerrar Sesión", "¿Estás seguro que deseas cerrar sesión?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        if confirm == QMessageBox.Yes:
+            self.hide()
+            self.login_window.show()

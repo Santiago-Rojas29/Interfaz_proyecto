@@ -48,7 +48,7 @@ class LoginWindow(QWidget):
         for u in usuarios:
             if u['nombre'] == nombre and u['contraseña'] == contraseña:
                 self.hide()
-                self.main_window = MainWindow(nombre)
+                self.main_window = MainWindow(nombre, self)
                 self.main_window.show()
                 return
 
