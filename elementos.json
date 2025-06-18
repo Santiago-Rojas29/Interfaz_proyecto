@@ -2,11 +2,21 @@
     {
         "nombre": "chocolate",
         "precio": 10000.0,
-        "stock": 3
+        "stock": 0
     },
     {
         "nombre": "cafe",
         "precio": 12000.0,
-        "stock": 3
+        "stock": 0
+    },
+    {
+        "nombre": "arroz",
+        "precio": 5000.0,
+        "stock": 0
+    },
+    {
+        "nombre": "leche",
+        "precio": 12000.0,
+        "stock": 0
     }
 ]

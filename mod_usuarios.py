@@ -7,6 +7,7 @@ from data import (
     cargar_usuarios, guardar_usuarios,
     cargar_datos, guardar_datos
 )
+from PyQt5.QtWidgets import QComboBox
 
 usuarios = cargar_usuarios()
 ventas = cargar_datos("ventas.json")
@@ -72,6 +73,11 @@ class ModuloUsuarios(QWidget):
         self.contrasena.setPlaceholderText("Contraseña")
         self.contrasena.setEchoMode(QLineEdit.Password)
 
+        self.rol = QComboBox()
+        self.rol.addItems(["administrador", "encargado"])
+        self.rol.setStyleSheet("padding: 6px; border: 1px solid #BDC3C7; border-radius: 5px; background-color: white;")
+
+
         self.lista = QListWidget()
         self.lista.itemClicked.connect(lambda _: self.cargar_usuario())
 
@@ -86,10 +92,11 @@ class ModuloUsuarios(QWidget):
         self.btn_eliminar.clicked.connect(self.eliminar_usuario)
         self.btn_volver.clicked.connect(self.volver)
 
-        for widget in [self.nombre, self.correo, self.contrasena,
-                       self.btn_guardar, self.lista,
-                       self.btn_editar, self.btn_eliminar, self.btn_volver]:
+        for widget in [self.nombre, self.correo, self.contrasena, self.rol,
+                self.btn_guardar, self.lista,
+                self.btn_editar, self.btn_eliminar, self.btn_volver]:
             layout.addWidget(widget)
+
 
         self.setLayout(layout)
         self.actualizar_lista()
@@ -99,7 +106,8 @@ class ModuloUsuarios(QWidget):
         usuarios = cargar_usuarios()
         self.lista.clear()
         for u in usuarios:
-            self.lista.addItem(f"{u['nombre']} - {u['correo']}")
+            self.lista.addItem(f"{u['nombre']} - {u['correo']} - {u.get('rol', 'encargado')}")
+
 
     def cargar_usuario(self):
         row = self.lista.currentRow()
@@ -109,21 +117,34 @@ class ModuloUsuarios(QWidget):
             self.correo.setText(usuario['correo'])
             self.contrasena.setText(usuario['contraseña'])
             self.usuario_editando = row
+            self.rol.setCurrentText(usuario.get('rol', 'encargado'))
+
 
     def guardar_usuario(self):
         nombre = self.nombre.text().strip()
         correo = self.correo.text().strip()
         contrasena = self.contrasena.text().strip()
+        rol = self.rol.currentText()
 
         if not nombre or not correo or not contrasena:
             QMessageBox.warning(self, "Error", "Todos los campos son obligatorios")
             return
 
         if self.usuario_editando is None:
-            usuarios.append({'nombre': nombre, 'correo': correo, 'contraseña': contrasena})
+            usuarios.append({
+                'nombre': nombre,
+                'correo': correo,
+                'contraseña': contrasena,
+                'rol': rol
+            })
             QMessageBox.information(self, "Guardado", "Usuario guardado correctamente")
         else:
-            usuarios[self.usuario_editando] = {'nombre': nombre, 'correo': correo, 'contraseña': contrasena}
+            usuarios[self.usuario_editando] = {
+                'nombre': nombre,
+                'correo': correo,
+                'contraseña': contrasena,
+                'rol': rol
+            }
             QMessageBox.information(self, "Actualizado", "Usuario actualizado correctamente")
 
         guardar_usuarios(usuarios)
@@ -131,7 +152,10 @@ class ModuloUsuarios(QWidget):
         self.nombre.clear()
         self.correo.clear()
         self.contrasena.clear()
+        self.rol.setCurrentIndex(0)
         self.actualizar_lista()
+
+        
 
     def editar_usuario(self):
         if self.usuario_editando is not None:

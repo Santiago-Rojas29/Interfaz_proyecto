@@ -10,8 +10,9 @@
         "contraseña": "12345"
     },
     {
-        "nombre": "Andres",
-        "correo": "andres@gmailcom",
-        "contraseña": "12345"
+        "nombre": "andres",
+        "correo": "andres@gmail.com",
+        "contraseña": "12345",
+        "rol": "administrador"
     }
 ]

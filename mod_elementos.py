@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QListWidget, QPushButton,
-    QVBoxLayout, QMessageBox
+    QVBoxLayout, QMessageBox, QComboBox, QHBoxLayout, QFrame
 )
-
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
 from data import cargar_datos, guardar_datos
 
 # Cargar datos
@@ -12,63 +13,103 @@ elementos = cargar_datos("elementos.json")
 class ModuloElementos(QWidget):
     def __init__(self, parent):
         super().__init__()
-        self.setWindowTitle("Elementos")
+        self.setWindowTitle("Gestión de Inventario - Elementos")
         self.parent = parent
-        self.setGeometry(900, 350, 300, 300)
+        self.setGeometry(850, 250, 400, 600)
+
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #F4F6F7;
+                font-family: 'Segoe UI';
+            }
+            QLabel {
+                font-size: 15px;
+                color: #2C3E50;
+            }
+            QLineEdit {
+                padding: 8px;
+                font-size: 14px;
+                border: 1px solid #CED4DA;
+                border-radius: 6px;
+                background-color: white;
+            }
+            QListWidget {
+                background-color: white;
+                border: 1px solid #CED4DA;
+                border-radius: 6px;
+                font-size: 14px;
+                padding: 5px;
+            }
+            QPushButton {
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 6px;
+                font-weight: bold;
+                color: white;
+            }
+            QPushButton#guardar {
+                background-color: #3498DB;
+            }
+            QPushButton#guardar:hover {
+                background-color: #2E86C1;
+            }
+            QPushButton#eliminar {
+                background-color: #5DADE2;
+            }
+            QPushButton#eliminar:hover {
+                background-color: #2C81BA;
+            }
+            QPushButton#volver {
+                background-color: #E74C3C;
+            }
+            QPushButton#volver:hover {
+                background-color: #C0392B;
+            }
+        """)
+
         layout = QVBoxLayout()
 
-        label_nombre = QLabel("Nombre del elemento")
-        label_nombre.setStyleSheet("""
-            font-size: 20px;
-            font-family: 'Times New Roman';
-            color: black;
-            font-weight: bold;
-        """)
+        # Título con ícono
+        titulo = QLabel("📦 GESTIÓN DE ELEMENTOS")
+        titulo.setAlignment(Qt.AlignCenter)
+        titulo.setFont(QFont("Segoe UI", 70, QFont.Bold))  # Más grande
+        titulo.setStyleSheet("font size; 22; color: #4A235A; font-wight: bold; margin-bottom: 20px;")
+        layout.addWidget(titulo)
+
+        # Campo: nombre
         self.nombre = QLineEdit()
-        self.nombre.setPlaceholderText("Producto")
+        self.nombre.setPlaceholderText("Nombre del producto")
+        layout.addWidget(self.nombre)
 
-        label_precio = QLabel("Precio")
-        label_precio.setStyleSheet(label_nombre.styleSheet())
+        # Campo: precio
         self.precio = QLineEdit()
-        self.precio.setPlaceholderText("Ej: 1200")
+        self.precio.setPlaceholderText("Precio")
+        layout.addWidget(self.precio)
 
+        # Botón guardar
+        self.btn_guardar = QPushButton("Guardar Elemento")
+        self.btn_guardar.setObjectName("guardar")
+        layout.addWidget(self.btn_guardar)
+
+        # Lista de elementos
         self.lista = QListWidget()
         self.actualizar_lista()
+        layout.addWidget(self.lista)
 
-        self.btn_guardar = QPushButton("Guardar")
-        self.btn_eliminar = QPushButton("Eliminar")
+        # Botón eliminar
+        self.btn_eliminar = QPushButton("Eliminar Elemento")
+        self.btn_eliminar.setObjectName("eliminar")
+        layout.addWidget(self.btn_eliminar)
+
+        # Botón volver
         self.btn_volver = QPushButton("Volver")
+        self.btn_volver.setObjectName("volver")
+        layout.addWidget(self.btn_volver)
 
+        # Conectar señales
         self.btn_guardar.clicked.connect(self.guardar_elemento)
         self.btn_eliminar.clicked.connect(self.eliminar_elemento)
         self.btn_volver.clicked.connect(self.volver)
-
-        estilo_boton = """
-            QPushButton {
-                background-color: #3498DB;
-                color: white;
-                font-size: 16px;
-                padding: 5px;
-                border-radius: 5px;
-                font-weight: bold;
-                font-family: 'Times New Roman';
-            }
-            QPushButton:hover {
-                background-color: #2980B9;
-            }
-        """
-        for btn in [self.btn_guardar, self.btn_eliminar, self.btn_volver]:
-            btn.setStyleSheet(estilo_boton)
-
-        layout.addWidget(label_nombre)
-        layout.addWidget(self.nombre)
-        layout.addWidget(label_precio)
-        layout.addWidget(self.precio)
-        layout.addWidget(self.btn_guardar)
-        layout.addWidget(QLabel("Elementos registrados"))
-        layout.addWidget(self.lista)
-        layout.addWidget(self.btn_eliminar)
-        layout.addWidget(self.btn_volver)
 
         self.setLayout(layout)
 
@@ -91,7 +132,7 @@ class ModuloElementos(QWidget):
                 return
 
             elementos.append({'nombre': nombre, 'precio': precio, 'stock': 0})
-            guardar_datos("elementos.json", elementos)  # ✅ Guardar en archivo
+            guardar_datos("elementos.json", elementos)
 
             QMessageBox.information(self, "Guardado", "Elemento guardado correctamente.")
             self.nombre.clear()
@@ -110,11 +151,10 @@ class ModuloElementos(QWidget):
             )
             if confirm == QMessageBox.Yes:
                 elementos.pop(row)
-                guardar_datos("elementos.json", elementos)  # ✅ Guardar en archivo
+                guardar_datos("elementos.json", elementos)
                 self.actualizar_lista()
         else:
-            QMessageBox.warning(self, "Sin elección", "Seleccione primero el elemento")
-            
+            QMessageBox.warning(self, "Sin selección", "Seleccione primero un elemento.")
 
     def actualizar_lista(self):
         self.lista.clear()
