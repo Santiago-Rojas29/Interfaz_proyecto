@@ -63,7 +63,7 @@ class ModuloVentas(QWidget):
         self.lista_productos.setSelectionMode(QListWidget.MultiSelection)
         layout.addWidget(self.lista_productos)
 
-        label_cantidad = QLabel("Cantidad por producto (en orden):")
+        label_cantidad = QLabel("Cantidad por producto:")
         label_cantidad.setStyleSheet("font-weight: bold; color: #2C3E50;")
         layout.addWidget(label_cantidad)
 
@@ -90,19 +90,32 @@ class ModuloVentas(QWidget):
         global elementos
         elementos = cargar_datos("elementos.json")
         self.lista_productos.clear()
-        self.spins = []
-        for el in elementos:
+
+        # Limpiar spins anteriores
+        for i in reversed(range(self.spins_layout.count())):
+            self.spins_layout.itemAt(i).widget().deleteLater()
+
+        self.spins = {}
+        for i, el in enumerate(elementos):
             item = QListWidgetItem(f"{el['nombre']} (${el['precio']}) - Stock: {el['stock']}")
             self.lista_productos.addItem(item)
 
             spin = QSpinBox()
             spin.setMinimum(1)
             spin.setMaximum(el['stock'])
+            spin.setVisible(False)  # solo visible si está seleccionado
             self.spins_layout.addWidget(spin)
-            self.spins.append(spin)
+            self.spins[i] = spin
+
+        self.lista_productos.itemSelectionChanged.connect(self.actualizar_spins_visibles)
+
+    def actualizar_spins_visibles(self):
+        seleccionados = [i.row() for i in self.lista_productos.selectedIndexes()]
+        for i, spin in self.spins.items():
+            spin.setVisible(i in seleccionados)
 
     def registrar_venta(self):
-        seleccionados = self.lista_productos.selectedIndexes()
+        seleccionados = [i.row() for i in self.lista_productos.selectedIndexes()]
         if not seleccionados:
             QMessageBox.warning(self, "Error", "Selecciona al menos un producto.")
             return
@@ -110,18 +123,16 @@ class ModuloVentas(QWidget):
         ventas_factura = []
         total_factura = 0
 
-        for idx in seleccionados:
-            i = idx.row()
+        # Validar stock
+        for i in seleccionados:
             cantidad = self.spins[i].value()
             el = elementos[i]
-
             if cantidad > el['stock']:
                 QMessageBox.warning(self, "Stock insuficiente", f"No hay suficiente stock para {el['nombre']}.")
                 return
 
-        # Procesar la venta si todo es válido
-        for idx in seleccionados:
-            i = idx.row()
+        # Procesar la venta
+        for i in seleccionados:
             cantidad = self.spins[i].value()
             el = elementos[i]
 

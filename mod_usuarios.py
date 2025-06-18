@@ -1,13 +1,12 @@
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QListWidget, QPushButton,
-    QVBoxLayout, QMessageBox
+    QVBoxLayout, QMessageBox, QHBoxLayout, QComboBox
 )
 from PyQt5.QtCore import Qt
 from data import (
     cargar_usuarios, guardar_usuarios,
     cargar_datos, guardar_datos
 )
-from PyQt5.QtWidgets import QComboBox
 
 usuarios = cargar_usuarios()
 ventas = cargar_datos("ventas.json")
@@ -16,12 +15,14 @@ elementos = cargar_datos("elementos.json")
 compras = cargar_datos("compras.json")
 
 class ModuloUsuarios(QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, usuario_nombre, usuario_rol):
         super().__init__()
         self.setWindowTitle("Gestión de Usuarios")
-        self.setGeometry(850, 300, 400, 500)
+        self.setGeometry(850, 300, 400, 520)
         self.parent = parent
         self.usuario_editando = None
+        self.usuario_nombre = usuario_nombre
+        self.usuario_rol = usuario_rol
 
         self.setStyleSheet("""
             QWidget {
@@ -73,10 +74,19 @@ class ModuloUsuarios(QWidget):
         self.contrasena.setPlaceholderText("Contraseña")
         self.contrasena.setEchoMode(QLineEdit.Password)
 
+        # Botón para mostrar/ocultar contraseña
+        btn_mostrar = QPushButton("👁")
+        btn_mostrar.setFixedWidth(40)
+        btn_mostrar.clicked.connect(self.toggle_contrasena)
+
+        contrasena_layout = QHBoxLayout()
+        contrasena_layout.addWidget(self.contrasena)
+        contrasena_layout.addWidget(btn_mostrar)
+        layout.addLayout(contrasena_layout)
+
         self.rol = QComboBox()
         self.rol.addItems(["administrador", "encargado"])
         self.rol.setStyleSheet("padding: 6px; border: 1px solid #BDC3C7; border-radius: 5px; background-color: white;")
-
 
         self.lista = QListWidget()
         self.lista.itemClicked.connect(lambda _: self.cargar_usuario())
@@ -92,14 +102,39 @@ class ModuloUsuarios(QWidget):
         self.btn_eliminar.clicked.connect(self.eliminar_usuario)
         self.btn_volver.clicked.connect(self.volver)
 
-        for widget in [self.nombre, self.correo, self.contrasena, self.rol,
-                self.btn_guardar, self.lista,
-                self.btn_editar, self.btn_eliminar, self.btn_volver]:
-            layout.addWidget(widget)
+        if self.usuario_rol != "encargado":
+            layout.addWidget(self.nombre)
+            layout.addWidget(self.correo)
+            layout.addWidget(self.rol)
+            layout.addWidget(self.btn_guardar)
+            layout.addWidget(self.lista)
+            layout.addWidget(self.btn_editar)
+            layout.addWidget(self.btn_eliminar)
+        else:
+            # Cargar datos propios del encargado
+            for i, u in enumerate(usuarios):
+                if u["nombre"] == self.usuario_nombre:
+                    self.nombre.setText(u["nombre"])
+                    self.correo.setText(u["correo"])
+                    self.contrasena.setText(u["contraseña"])
+                    self.usuario_editando = i
+                    break
+            layout.addWidget(self.nombre)
+            layout.addWidget(self.correo)
+            layout.addWidget(self.rol)
+            self.rol.setCurrentText("encargado")
+            self.rol.setEnabled(False)
+            layout.addWidget(self.btn_editar)
 
-
+        layout.addWidget(self.btn_volver)
         self.setLayout(layout)
         self.actualizar_lista()
+
+    def toggle_contrasena(self):
+        if self.contrasena.echoMode() == QLineEdit.Password:
+            self.contrasena.setEchoMode(QLineEdit.Normal)
+        else:
+            self.contrasena.setEchoMode(QLineEdit.Password)
 
     def actualizar_lista(self):
         global usuarios
@@ -107,7 +142,6 @@ class ModuloUsuarios(QWidget):
         self.lista.clear()
         for u in usuarios:
             self.lista.addItem(f"{u['nombre']} - {u['correo']} - {u.get('rol', 'encargado')}")
-
 
     def cargar_usuario(self):
         row = self.lista.currentRow()
@@ -118,7 +152,6 @@ class ModuloUsuarios(QWidget):
             self.contrasena.setText(usuario['contraseña'])
             self.usuario_editando = row
             self.rol.setCurrentText(usuario.get('rol', 'encargado'))
-
 
     def guardar_usuario(self):
         nombre = self.nombre.text().strip()
@@ -154,8 +187,6 @@ class ModuloUsuarios(QWidget):
         self.contrasena.clear()
         self.rol.setCurrentIndex(0)
         self.actualizar_lista()
-
-        
 
     def editar_usuario(self):
         if self.usuario_editando is not None:

@@ -87,5 +87,39 @@
             }
         ],
         "total": 10000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 5,
+                "precio_unitario": 10000.0,
+                "total": 50000.0
+            },
+            {
+                "nombre": "cafe",
+                "cantidad": 1,
+                "precio_unitario": 12000.0,
+                "total": 12000.0
+            }
+        ],
+        "total": 62000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 3,
+                "precio_unitario": 10000.0,
+                "total": 30000.0
+            },
+            {
+                "nombre": "cafe",
+                "cantidad": 3,
+                "precio_unitario": 12000.0,
+                "total": 36000.0
+            }
+        ],
+        "total": 66000.0
     }
 ]
