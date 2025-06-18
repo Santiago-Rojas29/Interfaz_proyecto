@@ -20,5 +20,55 @@
         "elemento": "Chocolates",
         "cantidad": 4,
         "total": 40000.0
+    },
+    {
+        "elemento": "Chocolates",
+        "cantidad": 3,
+        "total": 30000.0
+    },
+    {
+        "elemento": "Chocolates",
+        "cantidad": 3,
+        "total": 30000.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 3,
+        "total": 30000.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 4,
+        "total": 40000.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 1,
+        "total": 10000.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 1,
+        "total": 10000.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 2,
+        "total": 20000.0
+    },
+    {
+        "elemento": "cafe",
+        "cantidad": 3,
+        "total": 36000.0
+    },
+    {
+        "elemento": "arroz",
+        "cantidad": 0,
+        "total": 0.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 1,
+        "total": 10000.0
     }
 ]

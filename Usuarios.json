@@ -8,5 +8,11 @@
         "nombre": "Felipe A",
         "correo": "felipe@gmail.com",
         "contraseña": "12345"
+    },
+    {
+        "nombre": "andres",
+        "correo": "andres@gmail.com",
+        "contraseña": "12345",
+        "rol": "administrador"
     }
 ]

@@ -1,0 +1,91 @@
+[
+    {
+        "ventas": [
+            {
+                "nombre": "Chocolates",
+                "cantidad": 3,
+                "precio_unitario": 10000.0,
+                "total": 30000.0
+            }
+        ],
+        "total": 30000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 3,
+                "precio_unitario": 10000.0,
+                "total": 30000.0
+            }
+        ],
+        "total": 30000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 4,
+                "precio_unitario": 10000.0,
+                "total": 40000.0
+            }
+        ],
+        "total": 40000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 1,
+                "precio_unitario": 10000.0,
+                "total": 10000.0
+            }
+        ],
+        "total": 10000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 1,
+                "precio_unitario": 10000.0,
+                "total": 10000.0
+            }
+        ],
+        "total": 10000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 2,
+                "precio_unitario": 10000.0,
+                "total": 20000.0
+            },
+            {
+                "nombre": "cafe",
+                "cantidad": 3,
+                "precio_unitario": 12000.0,
+                "total": 36000.0
+            },
+            {
+                "nombre": "arroz",
+                "cantidad": 0,
+                "precio_unitario": 5000.0,
+                "total": 0.0
+            }
+        ],
+        "total": 56000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 1,
+                "precio_unitario": 10000.0,
+                "total": 10000.0
+            }
+        ],
+        "total": 10000.0
+    }
+]
