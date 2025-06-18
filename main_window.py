@@ -5,6 +5,7 @@ from mod_usuarios import ModuloUsuarios
 from mod_elementos import ModuloElementos
 from mod_ventas import ModuloVentas
 from mod_compras import ModuloCompras
+from mod_facturas import ModuloFacturas
 
 class MainWindow(QWidget):
     def __init__(self, usuario_nombre):
@@ -68,10 +69,9 @@ class MainWindow(QWidget):
         self.venta_window.show()
 
     def abrir_modulo_factura(self):
-        total = sum(v['total'] for v in ventas)
-        facturas.append({'ventas': ventas.copy(), 'total': total})
-        ventas.clear()
-        QMessageBox.information(self, "Factura generada", f"Total facturado: ${total:.2f}")
+        self.hide()
+        self.factura_window = ModuloFacturas(self)
+        self.factura_window.show()
 
     def abrir_modulo_compras(self):
         self.hide()

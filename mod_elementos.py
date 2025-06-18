@@ -25,12 +25,12 @@ class ModuloElementos(QWidget):
             font-weight: bold;
         """)
         self.nombre = QLineEdit()
-        self.nombre.setPlaceholderText("Ej: Monitor, Teclado...")
+        self.nombre.setPlaceholderText("Producto")
 
         label_precio = QLabel("Precio")
         label_precio.setStyleSheet(label_nombre.styleSheet())
         self.precio = QLineEdit()
-        self.precio.setPlaceholderText("Ej: 1200.00")
+        self.precio.setPlaceholderText("Ej: 1200")
 
         self.lista = QListWidget()
         self.actualizar_lista()
