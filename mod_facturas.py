@@ -18,8 +18,8 @@ class ModuloFacturas(QWidget):
 
         layout = QVBoxLayout()
         self.tabla = QTableWidget()
-        self.tabla.setColumnCount(2)
-        self.tabla.setHorizontalHeaderLabels(["N° Factura", "Total"])
+        self.tabla.setColumnCount(3)
+        self.tabla.setHorizontalHeaderLabels(["N° Factura", "Total", "Cantidad"])
 
         self.btn_exportar = QPushButton("Exportar como PDF")
         self.btn_exportar.clicked.connect(self.exportar_pdf)
@@ -40,7 +40,12 @@ class ModuloFacturas(QWidget):
         for i, factura in enumerate(self.facturas):
             self.tabla.setItem(i, 0, QTableWidgetItem(str(i + 1)))
             self.tabla.setItem(i, 1, QTableWidgetItem(f"${factura['total']:.2f}"))
-
+            cantidad_total = sum(v.get('cantidad', 0)for v in factura.get('ventas', []))
+            self.tabla.setItem(i, 2, QTableWidgetItem(str(cantidad_total))) 
+        
+        self.tabla.setColumnWidth(0, 200)
+        self.tabla.setColumnWidth(1, 200)
+        self.tabla.setColumnWidth(2, 200)
     def exportar_pdf(self):
         fila = self.tabla.currentRow()
         if fila < 0:

@@ -1,7 +1,12 @@
 [
     {
-        "nombre": "Chocolates",
+        "nombre": "chocolate",
         "precio": 10000.0,
-        "stock": 8
+        "stock": 3
+    },
+    {
+        "nombre": "cafe",
+        "precio": 12000.0,
+        "stock": 3
     }
 ]

@@ -1,10 +1,15 @@
+
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QComboBox, QSpinBox, QPushButton,
-    QMessageBox
+    QMessageBox, QFileDialog
 )
 from data import cargar_datos, guardar_datos
+from data_factura import cargar_facturas, guardar_facturas
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from datetime import datetime
+import os
 
-# Cargar las listas directamente desde el archivo JSON
 ventas = cargar_datos("ventas.json")
 elementos = cargar_datos("elementos.json")
 
@@ -20,9 +25,11 @@ class ModuloVentas(QWidget):
         self.cantidad = QSpinBox()
         self.cantidad.setMinimum(1)
         self.btn_vender = QPushButton("Registrar Venta")
+        self.btn_exportar = QPushButton("Exportar PDF")
         self.btn_volver = QPushButton("Volver")
 
         self.btn_vender.clicked.connect(self.registrar_venta)
+        self.btn_exportar.clicked.connect(self.exportar_ventas_pdf)
         self.btn_volver.clicked.connect(self.volver)
 
         label_producto = QLabel("Producto")
@@ -41,6 +48,7 @@ class ModuloVentas(QWidget):
         layout.addWidget(self.cantidad)
 
         layout.addWidget(self.btn_vender)
+        layout.addWidget(self.btn_exportar)
         layout.addWidget(self.btn_volver)
 
         estilo_btn = """
@@ -58,17 +66,21 @@ class ModuloVentas(QWidget):
             }
         """
         self.btn_vender.setStyleSheet(estilo_btn)
+        self.btn_exportar.setStyleSheet(estilo_btn)
         self.btn_volver.setStyleSheet(estilo_btn)
 
         self.setLayout(layout)
         self.actualizar_productos()
 
     def actualizar_productos(self):
+        global elementos
+        elementos = cargar_datos("elementos.json")
         self.producto.clear()
         for i, el in enumerate(elementos):
             self.producto.addItem(f"{el['nombre']} (${el['precio']}) - Stock: {el['stock']}", i)
 
     def registrar_venta(self):
+        self.actualizar_productos()
         idx = self.producto.currentIndex()
         if idx < 0 or idx >= len(elementos):
             QMessageBox.warning(self, "Error", "Selecciona un producto válido.")
@@ -89,12 +101,52 @@ class ModuloVentas(QWidget):
             'total': total
         })
 
-        # Guardar los cambios
         guardar_datos("ventas.json", ventas)
         guardar_datos("elementos.json", elementos)
 
+        facturas = cargar_facturas()
+        facturas.append({
+            'ventas': [{
+                'nombre': el['nombre'],
+                'cantidad': cantidad,
+                'precio_unitario': el['precio'],
+                'total': total
+            }],
+            'total': total
+        })
+        guardar_facturas(facturas)
+
         QMessageBox.information(self, "Venta registrada", f"Venta realizada con éxito\nTotal: ${total:.2f}")
         self.actualizar_productos()
+
+    def exportar_ventas_pdf(self):
+        if not ventas:
+            QMessageBox.information(self, "Sin ventas", "No hay ventas para exportar.")
+            return
+
+        ruta, _ = QFileDialog.getSaveFileName(self, "Guardar PDF", "ventas.pdf", "PDF Files (*.pdf)")
+        if ruta:
+            try:
+                c = canvas.Canvas(ruta, pagesize=letter)
+                c.setFont("Helvetica-Bold", 16)
+                c.drawString(50, 750, "Historial de Ventas")
+                c.setFont("Helvetica", 12)
+                fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M")
+                c.drawString(400, 750, f"Fecha: {fecha_actual}")
+                y = 720
+                for i, v in enumerate(ventas, start=1):
+                    linea = f"{i}. {v['cantidad']} x {v['elemento']} = ${v['total']:.2f}"
+                    c.drawString(50, y, linea)
+                    y -= 20
+                    if y < 50:
+                        c.showPage()
+                        c.setFont("Helvetica", 12)
+                        y = 750
+                c.save()
+                QMessageBox.information(self, "PDF creado", "Ventas exportadas exitosamente")
+                # os.startfile(ruta)  # Descomenta esta línea solo en Windows
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"No se pudo exportar el PDF:\n{e}")
 
     def volver(self):
         self.close()

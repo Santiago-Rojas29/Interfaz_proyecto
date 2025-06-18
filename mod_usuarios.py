@@ -152,6 +152,8 @@ class ModuloUsuarios(QWidget):
                 self.correo.clear()
                 self.contrasena.clear()
                 self.actualizar_lista()
+        else:
+            QMessageBox.warning(self, "Sin elección", "Seleccione primero un usuario para eliminar")
 
     def volver(self):
         self.close()

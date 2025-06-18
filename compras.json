@@ -1,19 +1,13 @@
 [
     {
-        "proveedor": "Distribuidora XYZ",
-        "elemento": "Teclado",
-        "cantidad": 10,
-        "precio": 40.0
+        "proveedor": "nescafe",
+        "elemento": "cafe",
+        "precio": 12000.0,
+        "cantidad": 3
     },
     {
-        "proveedor": "Ruth",
-        "elemento": "Chocolates",
-        "precio": 10000.0,
-        "cantidad": 20
-    },
-    {
-        "proveedor": "equisde",
-        "elemento": "Chocolates",
+        "proveedor": "cholo",
+        "elemento": "chocolate",
         "precio": 10000.0,
         "cantidad": 4
     }

@@ -1,0 +1,57 @@
+[
+    {
+        "ventas": [
+            {
+                "nombre": "Chocolates",
+                "cantidad": 3,
+                "precio_unitario": 10000.0,
+                "total": 30000.0
+            }
+        ],
+        "total": 30000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 3,
+                "precio_unitario": 10000.0,
+                "total": 30000.0
+            }
+        ],
+        "total": 30000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 4,
+                "precio_unitario": 10000.0,
+                "total": 40000.0
+            }
+        ],
+        "total": 40000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 1,
+                "precio_unitario": 10000.0,
+                "total": 10000.0
+            }
+        ],
+        "total": 10000.0
+    },
+    {
+        "ventas": [
+            {
+                "nombre": "chocolate",
+                "cantidad": 1,
+                "precio_unitario": 10000.0,
+                "total": 10000.0
+            }
+        ],
+        "total": 10000.0
+    }
+]

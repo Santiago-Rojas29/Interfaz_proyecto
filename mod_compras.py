@@ -50,6 +50,10 @@ class ModuloCompras(QWidget):
         self.btn_guardar.clicked.connect(self.registrar_compra)
         self.btn_volver.clicked.connect(self.volver)
 
+        self.btn_eliminar = QPushButton("Eliminar")
+        self.btn_eliminar.setStyleSheet(estilo_btn)
+        self.btn_eliminar.clicked.connect(self.eliminar_compra)
+
         for text, widget in zip([
             "Proveedor", "Producto", "Cantidad", "Historial de compras"
         ], [self.proveedor, self.producto, self.cantidad, self.lista_compras]):
@@ -64,12 +68,15 @@ class ModuloCompras(QWidget):
             layout.addWidget(widget)
 
         layout.addWidget(self.btn_guardar)
+        layout.addWidget(self.btn_eliminar)
         layout.addWidget(self.btn_volver)
 
         self.setLayout(layout)
         self.actualizar_lista()
 
     def actualizar_productos(self):
+        global elementos
+        elementos = cargar_datos("elementos.json")
         self.producto.clear()
         for i, el in enumerate(elementos):
             self.producto.addItem(f"{el['nombre']} - ${el['precio']} - Stock: {el['stock']}", i)
@@ -96,7 +103,7 @@ class ModuloCompras(QWidget):
             'precio': el['precio'],
             'cantidad': cantidad
         })
-
+    
         # Guardar actualizaciones en archivos
         guardar_datos("compras.json", compras)
         guardar_datos("elementos.json", elementos)
@@ -110,12 +117,26 @@ class ModuloCompras(QWidget):
         self.actualizar_lista()
 
     def actualizar_lista(self):
+        self.actualizar_productos()
         self.lista_compras.clear()
         for c in compras:
             self.lista_compras.addItem(
                 f"Proveedor: {c['proveedor']} | Producto: {c['elemento']} | "
                 f"Cantidad: {c['cantidad']} | Precio: ${c['precio']}"
             )
+    def eliminar_compra(self):
+        row= self.lista_compras.currentRow()
+        if row >= 0:
+            confirm = QMessageBox.question(
+                self, "Confirmar", "¿Deseas eliminar esta compra?",
+                QMessageBox.Yes | QMessageBox.No
+            )
+            if confirm == QMessageBox.Yes:
+                compras.pop(row)
+                guardar_datos("compras.json", compras)
+                self.actualizar_lista()
+        else:
+            QMessageBox.warning(self, "Sin elección", "Seleccione una compra para eliminar")
 
     def volver(self):
         self.close()

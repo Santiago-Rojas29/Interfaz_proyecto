@@ -112,6 +112,9 @@ class ModuloElementos(QWidget):
                 elementos.pop(row)
                 guardar_datos("elementos.json", elementos)  # ✅ Guardar en archivo
                 self.actualizar_lista()
+        else:
+            QMessageBox.warning(self, "Sin elección", "Seleccione primero el elemento")
+            
 
     def actualizar_lista(self):
         self.lista.clear()

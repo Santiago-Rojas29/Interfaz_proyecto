@@ -8,5 +8,10 @@
         "nombre": "Felipe A",
         "correo": "felipe@gmail.com",
         "contraseña": "12345"
+    },
+    {
+        "nombre": "Andres",
+        "correo": "andres@gmailcom",
+        "contraseña": "12345"
     }
 ]
