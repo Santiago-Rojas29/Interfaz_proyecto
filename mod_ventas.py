@@ -1,8 +1,8 @@
-
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QComboBox, QSpinBox, QPushButton,
     QMessageBox, QFileDialog
 )
+from PyQt5.QtCore import Qt
 from data import cargar_datos, guardar_datos
 from data_factura import cargar_facturas, guardar_facturas
 from reportlab.pdfgen import canvas
@@ -18,56 +18,67 @@ class ModuloVentas(QWidget):
         super().__init__()
         self.setWindowTitle("Ventas")
         self.parent = parent
-        self.setGeometry(800, 350, 400, 350)
-        layout = QVBoxLayout()
+        self.setGeometry(800, 350, 420, 420)
 
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #F4F6F8;
+                font-family: 'Segoe UI';
+                font-size: 14px;
+            }
+            QComboBox, QSpinBox {
+                padding: 6px;
+                border: 1px solid #BDC3C7;
+                border-radius: 5px;
+                background-color: white;
+            }
+            QPushButton {
+                background-color: #3498DB;
+                color: white;
+                font-size: 15px;
+                padding: 8px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2980B9;
+            }
+        """)
+
+        layout = QVBoxLayout()
+        layout.setContentsMargins(30, 30, 30, 30)
+        layout.setSpacing(12)
+
+        titulo = QLabel("🛒 Registro de Ventas")
+        titulo.setAlignment(Qt.AlignCenter)
+        titulo.setStyleSheet("font-size: 22px; font-weight: bold; color: #2C3E50;")
+        layout.addWidget(titulo)
+
+        label_producto = QLabel("Producto")
+        label_producto.setStyleSheet("font-weight: bold; color: #2C3E50;")
         self.producto = QComboBox()
+
+        label_cantidad = QLabel("Cantidad")
+        label_cantidad.setStyleSheet("font-weight: bold; color: #2C3E50;")
         self.cantidad = QSpinBox()
         self.cantidad.setMinimum(1)
+
         self.btn_vender = QPushButton("Registrar Venta")
         self.btn_exportar = QPushButton("Exportar PDF")
         self.btn_volver = QPushButton("Volver")
+        self.btn_volver.setStyleSheet("background-color: #e74c3c; color: white; padding: 8px;")
 
         self.btn_vender.clicked.connect(self.registrar_venta)
         self.btn_exportar.clicked.connect(self.exportar_ventas_pdf)
         self.btn_volver.clicked.connect(self.volver)
 
-        label_producto = QLabel("Producto")
-        label_producto.setStyleSheet("""
-            font-size: 20px;
-            font-family: 'Times New Roman';
-            color: black;
-            font-weight: bold;
-        """)
         layout.addWidget(label_producto)
         layout.addWidget(self.producto)
-
-        label_cantidad = QLabel("Cantidad")
-        label_cantidad.setStyleSheet(label_producto.styleSheet())
         layout.addWidget(label_cantidad)
         layout.addWidget(self.cantidad)
-
         layout.addWidget(self.btn_vender)
         layout.addWidget(self.btn_exportar)
         layout.addWidget(self.btn_volver)
-
-        estilo_btn = """
-            QPushButton {
-                background-color: #3498DB;
-                color: white;
-                font-size: 16px;
-                padding: 5px;
-                border-radius: 5px;
-                font-weight: bold;
-                font-family: 'Times New Roman';
-            }
-            QPushButton:hover {
-                background-color: #2980B9;
-            }
-        """
-        self.btn_vender.setStyleSheet(estilo_btn)
-        self.btn_exportar.setStyleSheet(estilo_btn)
-        self.btn_volver.setStyleSheet(estilo_btn)
 
         self.setLayout(layout)
         self.actualizar_productos()
@@ -144,7 +155,6 @@ class ModuloVentas(QWidget):
                         y = 750
                 c.save()
                 QMessageBox.information(self, "PDF creado", "Ventas exportadas exitosamente")
-                # os.startfile(ruta)  # Descomenta esta línea solo en Windows
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo exportar el PDF:\n{e}")
 
