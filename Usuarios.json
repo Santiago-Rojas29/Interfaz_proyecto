@@ -2,7 +2,8 @@
     {
         "nombre": "admin",
         "correo": "admin@sistema.com",
-        "contraseña": "1234"
+        "contraseña": "1234",
+        "rol": "administrador"
     },
     {
         "nombre": "Felipe A",

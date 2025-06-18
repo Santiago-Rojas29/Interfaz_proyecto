@@ -70,5 +70,25 @@
         "elemento": "chocolate",
         "cantidad": 1,
         "total": 10000.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 5,
+        "total": 50000.0
+    },
+    {
+        "elemento": "cafe",
+        "cantidad": 1,
+        "total": 12000.0
+    },
+    {
+        "elemento": "chocolate",
+        "cantidad": 3,
+        "total": 30000.0
+    },
+    {
+        "elemento": "cafe",
+        "cantidad": 3,
+        "total": 36000.0
     }
 ]

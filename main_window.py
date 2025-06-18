@@ -1,6 +1,9 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
+from PyQt5.QtWidgets import (
+    QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox,
+    QHBoxLayout, QSizePolicy
+)
 from PyQt5.QtCore import Qt
-from data import cargar_ventas, cargar_facturas
+from PyQt5.QtGui import QPixmap, QIcon
 from mod_usuarios import ModuloUsuarios
 from mod_elementos import ModuloElementos
 from mod_ventas import ModuloVentas
@@ -11,82 +14,150 @@ class MainWindow(QWidget):
     def __init__(self, usuario_nombre, usuario_rol, login_window):
         super().__init__()
         self.login_window = login_window
-        self.setWindowTitle("Panel Principal - Stocky")
-        self.setGeometry(800, 350, 420, 500)
+        self.usuario_nombre = usuario_nombre
+        self.usuario_rol = usuario_rol.lower()
 
+        self.setWindowTitle("Panel Principal - Stocky")
+        self.setGeometry(800, 350, 600, 500)
         self.setObjectName("ventanaPrincipal")
+
         self.setStyleSheet(""" 
             #ventanaPrincipal {
                 background-color: #F4F6F8;
                 font-family: 'Segoe UI';
                 font-size: 14px;
             }
-
-            QLabel#bienvenidaLabel {
-                font-size: 20px;
+            QLabel#tituloLabel {
+                font-size: 24px;
                 font-weight: bold;
                 color: #3498DB;
             }
-
+            QLabel#nombreLabel {
+                font-size: 13px;
+                font-weight: bold;
+                color: #2980B9;
+            }
+            QLabel#rolLabel {
+                font-size: 11px;
+                color: #555555;
+            }
             QPushButton {
                 padding: 12px;
                 border: none;
                 border-radius: 10px;
                 font-size: 15px;
                 font-weight: bold;
+                text-align: left;
+                padding-left: 14px;
             }
-
+            QPushButton::icon {
+                padding-right: 10px;
+            }
             QPushButton.botonModulo {
                 background-color: #3498DB;
                 color: white;
             }
-
             QPushButton.botonModulo:hover {
                 background-color: #2980B9;
             }
-
             QPushButton#cerrarSesion {
                 background-color: #e74c3c;
                 color: white;
             }
-
             QPushButton#cerrarSesion:hover {
                 background-color: #c0392b;
             }
         """)
 
-        layout = QVBoxLayout()
-        layout.setContentsMargins(40, 30, 40, 30)
-        layout.setSpacing(20)
-        layout.setAlignment(Qt.AlignTop)
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(30, 20, 30, 20)
+        main_layout.setSpacing(20)
 
-        self.label_bienvenida = QLabel(f"{usuario_rol.capitalize()} - Bienvenido, {usuario_nombre}")
-        self.label_bienvenida.setObjectName("bienvenidaLabel")
-        self.label_bienvenida.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.label_bienvenida)
+        # --- Layout superior con "Bienvenido a Stocky" centrado y datos a la derecha ---
+        top_layout = QHBoxLayout()
+        top_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.btn_usuarios = QPushButton("Módulo de Usuarios")
-        self.btn_elementos = QPushButton("Módulo de Elementos")
-        self.btn_ventas = QPushButton("Módulo de Ventas")
-        self.btn_factura = QPushButton("Módulo de Facturación")
-        self.btn_compras = QPushButton("Módulo de Compras")
-        self.btn_cerrar = QPushButton("Cerrar Sesión")
+        # Título centrado
+        titulo = QLabel("Bienvenido a Stocky")
+        titulo.setObjectName("tituloLabel")
+        titulo.setAlignment(Qt.AlignCenter)
+        titulo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        top_layout.addWidget(titulo)
 
-        # Estilo de clase para todos los botones de módulo
-        botones = [
-            self.btn_usuarios, self.btn_elementos,
-            self.btn_ventas, self.btn_factura, self.btn_compras
-        ]
+        # Datos del usuario (a la derecha)
+        datos_layout = QVBoxLayout()
+        datos_layout.setAlignment(Qt.AlignRight)
+
+        icono_usuario = QLabel()
+        pixmap = QPixmap("icono_usuario.png")
+        if not pixmap.isNull():
+            pixmap = pixmap.scaled(40, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            icono_usuario.setPixmap(pixmap)
+        else:
+            icono_usuario.setText("👤")
+            icono_usuario.setStyleSheet("font-size: 30px;")
+        icono_usuario.setAlignment(Qt.AlignRight)
+
+        nombre_label = QLabel(self.usuario_nombre)
+        nombre_label.setObjectName("nombreLabel")
+        nombre_label.setAlignment(Qt.AlignRight)
+
+        rol_label = QLabel(f"Rol: {self.usuario_rol.capitalize()}")
+        rol_label.setObjectName("rolLabel")
+        rol_label.setAlignment(Qt.AlignRight)
+
+        datos_layout.addWidget(icono_usuario)
+        datos_layout.addWidget(nombre_label)
+        datos_layout.addWidget(rol_label)
+
+        top_layout.addLayout(datos_layout)
+        main_layout.addLayout(top_layout)
+
+        # --- Botones de módulos con íconos ---
+        self.btn_usuarios = QPushButton("  Módulo de Usuarios")
+        self.btn_usuarios.setIcon(QIcon("icon_usuarios.png"))
+
+        self.btn_elementos = QPushButton("  Módulo de Elementos")
+        self.btn_elementos.setIcon(QIcon("icon_elementos.png"))
+
+        self.btn_ventas = QPushButton("  Módulo de Ventas")
+        self.btn_ventas.setIcon(QIcon("icon_ventas.png"))
+
+        self.btn_factura = QPushButton("  Módulo de Facturación")
+        self.btn_factura.setIcon(QIcon("icon_factura.png"))
+
+        self.btn_compras = QPushButton("  Módulo de Compras")
+        self.btn_compras.setIcon(QIcon("icon_compras.png"))
+
+        self.btn_cerrar = QPushButton("  Cerrar Sesión")
+        self.btn_cerrar.setIcon(QIcon("icon_logout.png"))
+
+        botones = []
+
+        if self.usuario_rol == "administrador":
+            botones = [
+                self.btn_usuarios, self.btn_elementos,
+                self.btn_ventas, self.btn_factura,
+                self.btn_compras
+            ]
+        elif self.usuario_rol in ["empleado", "encargado"]:
+            botones = [
+                self.btn_usuarios, self.btn_elementos,
+                self.btn_ventas, self.btn_factura,
+                self.btn_compras
+            ]
+
         for btn in botones:
             btn.setProperty("class", "botonModulo")
-            layout.addWidget(btn)
+            main_layout.addWidget(btn)
 
         self.btn_cerrar.setObjectName("cerrarSesion")
-        layout.addSpacing(10)
-        layout.addWidget(self.btn_cerrar)
+        main_layout.addSpacing(10)
+        main_layout.addWidget(self.btn_cerrar)
 
-        self.setLayout(layout)
+        self.setLayout(main_layout)
 
+        # Conexión de botones
         self.btn_usuarios.clicked.connect(self.abrir_modulo_usuarios)
         self.btn_elementos.clicked.connect(self.abrir_modulo_elementos)
         self.btn_ventas.clicked.connect(self.abrir_modulo_ventas)
@@ -96,7 +167,7 @@ class MainWindow(QWidget):
 
     def abrir_modulo_usuarios(self):
         self.hide()
-        self.usuario_window = ModuloUsuarios(self)
+        self.usuario_window = ModuloUsuarios(self, self.usuario_nombre, self.usuario_rol)
         self.usuario_window.show()
 
     def abrir_modulo_elementos(self):

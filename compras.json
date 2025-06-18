@@ -10,5 +10,29 @@
         "elemento": "chocolate",
         "precio": 10000.0,
         "cantidad": 4
+    },
+    {
+        "proveedor": "Ruperto",
+        "elemento": "chocolate",
+        "precio": 10000.0,
+        "cantidad": 10
+    },
+    {
+        "proveedor": "Hola",
+        "elemento": "cafe",
+        "precio": 12000.0,
+        "cantidad": 10
+    },
+    {
+        "proveedor": "felipe",
+        "elemento": "arroz",
+        "precio": 5000.0,
+        "cantidad": 10
+    },
+    {
+        "proveedor": "Yo",
+        "elemento": "leche",
+        "precio": 12000.0,
+        "cantidad": 10
     }
 ]
